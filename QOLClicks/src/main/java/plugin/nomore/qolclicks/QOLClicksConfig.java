@@ -30,166 +30,376 @@ import net.runelite.client.config.*;
 public interface QOLClicksConfig extends Config
 {
 
-	// https://www.patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Type%20Something%20
+    @ConfigTitle(
+            keyName = "configOptionsTitle",
+            name = "Configuration Options",
+            description = "",
+            position = 1
+    )
+    String configOptionsTitle = "configOptionsTitle";
 
-	@ConfigTitleSection(
-			keyName = "skillingMenuSwapsTitle",
-			name = "Skilling Menu Swaps",
-			description = "",
-			position = 1
-	)
-	default Title skillingMenuSwapsTitle()
-	{
-		return new Title();
-	}
+    @ConfigItem(
+            keyName = "configEnum",
+            name = "Show options for",
+            description = "",
+            position = 2,
+            title = "configOptionsTitle"
+    )
+    default ConfigOptions configOptions() { return ConfigOptions.INV_ITEM_ON_ITEM; }
 
-	@ConfigItem(
-			keyName = "skillConfiguration",
-			name = "Display options for:",
-			description = "",
-			position = 2,
-			titleSection = "skillingMenuSwapsTitle"
-	)
-	default SkillOptions skillConfiguration() { return SkillOptions.COOKING; }
+//  ██╗████████╗███████╗███╗   ███╗
+//  ██║╚══██╔══╝██╔════╝████╗ ████║
+//  ██║   ██║   █████╗  ██╔████╔██║
+//  ██║   ██║   ██╔══╝  ██║╚██╔╝██║
+//  ██║   ██║   ███████╗██║ ╚═╝ ██║
+//  ╚═╝   ╚═╝   ╚══════╝╚═╝     ╚═╝
+//
+//   ██████╗ ███╗   ██╗
+//  ██╔═══██╗████╗  ██║
+//  ██║   ██║██╔██╗ ██║
+//  ██║   ██║██║╚██╗██║
+//  ╚██████╔╝██║ ╚████║
+//   ╚═════╝ ╚═╝  ╚═══╝
+//
+//  ██╗████████╗███████╗███╗   ███╗
+//  ██║╚══██╔══╝██╔════╝████╗ ████║
+//  ██║   ██║   █████╗  ██╔████╔██║
+//  ██║   ██║   ██╔══╝  ██║╚██╔╝██║
+//  ██║   ██║   ███████╗██║ ╚═╝ ██║
+//  ╚═╝   ╚═╝   ╚══════╝╚═╝     ╚═╝
+//
 
-	//   ██████╗ ██████╗  ██████╗ ██╗  ██╗██╗███╗   ██╗ ██████╗
-	//  ██╔════╝██╔═══██╗██╔═══██╗██║ ██╔╝██║████╗  ██║██╔════╝
-	//  ██║     ██║   ██║██║   ██║█████╔╝ ██║██╔██╗ ██║██║  ███╗
-	//  ██║     ██║   ██║██║   ██║██╔═██╗ ██║██║╚██╗██║██║   ██║
-	//  ╚██████╗╚██████╔╝╚██████╔╝██║  ██╗██║██║ ╚████║╚██████╔╝
-	//   ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
-	//
+    @ConfigItem(
+            keyName = "enableItemOnItem",
+            name = "Enable",
+            description = "",
+            position = 3,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "INV_ITEM_ON_ITEM"
+    )
+    default boolean enableItemOnItem() { return false; }
 
-	@ConfigItem(
-			keyName = "enableCooking",
-			name = "Cook",
-			description = "Add a menu option \"Cook\" to raw food items. The menu option will only show if a fire or range is nearby.",
-			position = 3,
-			hidden = true,
-			unhide = "skillConfiguration",
-			unhideValue = "COOKING",
-			titleSection = "skillingMenuSwapsTitle"
-	)
-	default boolean enableCooking() { return false; }
+    @ConfigItem(
+            keyName = "itemOnItemTarget",
+            name = "Clicked Item ID : Selected Item ID",
+            description = "Replace \"Clicked item\" with the id of the item you want to click on. Replace \"Selected item\" with the item you want to be selected.",
+            position = 4,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "INV_ITEM_ON_ITEM"
+    )
+    default String itemOnItemIds() { return "1519:590"; }
 
-	@ConfigItem(
-			keyName = "enableFishing",
-			name = "Fly Fishing Rod",
-			description = "Add a menu option \"Lure\" to the fly fishing rod. The menu option will only show if a lure fishing spot it nearby.",
-			position = 4,
-			hidden = true,
-			unhide = "skillConfiguration",
-			unhideValue = "FISHING",
-			titleSection = "skillingMenuSwapsTitle"
-	)
-	default boolean enableFishingRod() { return false; }
+//  ██╗   ██╗███████╗███████╗
+//  ██║   ██║██╔════╝██╔════╝
+//  ██║   ██║███████╗█████╗
+//  ██║   ██║╚════██║██╔══╝
+//  ╚██████╔╝███████║███████╗
+//   ╚═════╝ ╚══════╝╚══════╝
+//
+//  ██╗████████╗███████╗███╗   ███╗
+//  ██║╚══██╔══╝██╔════╝████╗ ████║
+//  ██║   ██║   █████╗  ██╔████╔██║
+//  ██║   ██║   ██╔══╝  ██║╚██╔╝██║
+//  ██║   ██║   ███████╗██║ ╚═╝ ██║
+//  ╚═╝   ╚═╝   ╚══════╝╚═╝     ╚═╝
+//
+//   ██████╗ ███╗   ██╗
+//  ██╔═══██╗████╗  ██║
+//  ██║   ██║██╔██╗ ██║
+//  ██║   ██║██║╚██╗██║
+//  ╚██████╔╝██║ ╚████║
+//   ╚═════╝ ╚═╝  ╚═══╝
+//
+//  ███╗   ██╗██████╗  ██████╗
+//  ████╗  ██║██╔══██╗██╔════╝
+//  ██╔██╗ ██║██████╔╝██║
+//  ██║╚██╗██║██╔═══╝ ██║
+//  ██║ ╚████║██║     ╚██████╗
+//  ╚═╝  ╚═══╝╚═╝      ╚═════╝
+//
 
-	@ConfigItem(
-			keyName = "enableLobsterPot",
-			name = "Lobster Cage",
-			description = "Add a menu option \"Cage\" to the lobster pot. The menu option will only show if a cage fishing spot is nearby.",
-			position = 5,
-			hidden = true,
-			unhide = "skillConfiguration",
-			unhideValue = "FISHING",
-			titleSection = "skillingMenuSwapsTitle"
-	)
-	default boolean enableLobsterPot() { return false; }
+    @ConfigItem(
+            keyName = "enableItemOnNpc",
+            name = "Enable",
+            description = "",
+            position = 3,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "NPC_USE_ITEM_ON"
+    )
+    default boolean enableItemOnNpc() { return false; }
 
-	@ConfigItem(
-			keyName = "enableBarbarianRod",
-			name = "Barbarian Rod",
-			description = "Add a menu option \"Fish\" to the barbarian rod. The menu option will only show if a barbarian rod fishing spot is nearby.",
-			position = 6,
-			hidden = true,
-			unhide = "skillConfiguration",
-			unhideValue = "FISHING",
-			titleSection = "skillingMenuSwapsTitle"
-	)
-	default boolean enableBarbarianRod() { return false; }
+    @ConfigItem(
+            keyName = "useItemOnNpcIds",
+            name = "Clicked Item ID : NPC ID",
+            description = "Replace \"Clicked item\" with the id of the item you want to click on. Replace \"NPC ID\" with the npc you want to use the item on.",
+            position = 4,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "NPC_USE_ITEM_ON"
+    )
+    default String useItemOnNpcIds() { return "1519:590"; }
+    
+//  ███╗   ██╗██████╗  ██████╗                      
+//  ████╗  ██║██╔══██╗██╔════╝                      
+//  ██╔██╗ ██║██████╔╝██║                           
+//  ██║╚██╗██║██╔═══╝ ██║                           
+//  ██║ ╚████║██║     ╚██████╗                      
+//  ╚═╝  ╚═══╝╚═╝      ╚═════╝                      
+//                                                  
+//  ███████╗██╗██████╗ ███████╗████████╗            
+//  ██╔════╝██║██╔══██╗██╔════╝╚══██╔══╝            
+//  █████╗  ██║██████╔╝███████╗   ██║               
+//  ██╔══╝  ██║██╔══██╗╚════██║   ██║               
+//  ██║     ██║██║  ██║███████║   ██║               
+//  ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝               
+//                                                  
+//   ██████╗ ██████╗ ████████╗██╗ ██████╗ ███╗   ██╗
+//  ██╔═══██╗██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║
+//  ██║   ██║██████╔╝   ██║   ██║██║   ██║██╔██╗ ██║
+//  ██║   ██║██╔═══╝    ██║   ██║██║   ██║██║╚██╗██║
+//  ╚██████╔╝██║        ██║   ██║╚██████╔╝██║ ╚████║
+//   ╚═════╝ ╚═╝        ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+//      
+    
+    @ConfigItem(
+            keyName = "enableNPCFirstOption",
+            name = "Enable",
+            description = "",
+            position = 3,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "NPC_FIRST_OPTION"
+    )
+    default boolean enableNPCFirstOption() { return false; }
 
-	@ConfigItem(
-			keyName = "enableFiremaking",
-			name = "Burn",
-			description = "Add a menu option \"Burn\" to all logs. The menu option will only show if a tinderbox is in the inventory.",
-			position = 6,
-			hidden = true,
-			unhide = "skillConfiguration",
-			unhideValue = "FIREMAKING",
-			titleSection = "skillingMenuSwapsTitle"
-	)
-	default boolean enableFiremaking() { return false; }
+    @ConfigItem(
+            keyName = "npcOption",
+            name = "Option",
+            description = "",
+            position = 4,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "NPC_FIRST_OPTION"
+    )
+    default String npcOption() { return "Use-rod"; }
 
-	@ConfigItem(
-			keyName = "enableUnnoteBones",
-			name = "Unnote Bones",
-			description = "Add a menu option \"Unnote\" to all bones. The menu option will only show if the npc \"Phials\" is nearby.",
-			position = 7,
-			hidden = true,
-			unhide = "skillConfiguration",
-			unhideValue = "PRAYER",
-			titleSection = "skillingMenuSwapsTitle"
-	)
-	default boolean enableUnnoteBones() { return false; }
+    @ConfigItem(
+            keyName = "npcFirstOptionTarget",
+            name = "Clicked Item ID : NPC ID",
+            description = "Replace \"Clicked item\" with the id of the item you want to click on. Replace \"NPC ID\" with the npc you want to interact with.",
+            position = 5,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "NPC_FIRST_OPTION"
+    )
+    default String npcFirstOptionIds() { return "11323:1542"; }
 
-	@ConfigTitleSection(
-			keyName = "miscMenuSwapsTitle",
-			name = "Misc Menu Swaps",
-			description = "",
-			position = 8
-	)
-	default Title miscMenuSwapsTitle()
-	{
-		return new Title();
-	}
+//   ██████╗  █████╗ ███╗   ███╗███████╗ ██████╗ ██████╗      ██╗███████╗ ██████╗████████╗
+//  ██╔════╝ ██╔══██╗████╗ ████║██╔════╝██╔═══██╗██╔══██╗     ██║██╔════╝██╔════╝╚══██╔══╝
+//  ██║  ███╗███████║██╔████╔██║█████╗  ██║   ██║██████╔╝     ██║█████╗  ██║        ██║   
+//  ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██╗██   ██║██╔══╝  ██║        ██║   
+//  ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗╚██████╔╝██████╔╝╚█████╔╝███████╗╚██████╗   ██║   
+//   ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═════╝  ╚════╝ ╚══════╝ ╚═════╝   ╚═╝   
+//                                                                                        
+//  ███████╗██╗██████╗ ███████╗████████╗                                                  
+//  ██╔════╝██║██╔══██╗██╔════╝╚══██╔══╝                                                  
+//  █████╗  ██║██████╔╝███████╗   ██║                                                     
+//  ██╔══╝  ██║██╔══██╗╚════██║   ██║                                                     
+//  ██║     ██║██║  ██║███████║   ██║                                                     
+//  ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝                                                     
+//                                                                                        
+//   ██████╗ ██████╗ ████████╗██╗ ██████╗ ███╗   ██╗                                      
+//  ██╔═══██╗██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║                                      
+//  ██║   ██║██████╔╝   ██║   ██║██║   ██║██╔██╗ ██║                                      
+//  ██║   ██║██╔═══╝    ██║   ██║██║   ██║██║╚██╗██║                                      
+//  ╚██████╔╝██║        ██║   ██║╚██████╔╝██║ ╚████║                                      
+//   ╚═════╝ ╚═╝        ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝                                      
+//                                                                                        
 
-	@ConfigItem(
-			keyName = "enableBanking",
-			name = "Bank",
-			description = "Add a menu option \"Bank\" to the inventory tab. The menu option will only show if a bank is nearby.",
-			position = 9,
-			titleSection = "miscMenuSwapsTitle"
-	)
-	default boolean enableBanking() { return false; }
+    @ConfigItem(
+            keyName = "enableGameObjectFirstOption",
+            name = "Enable",
+            description = "",
+            position = 3,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "OBJECT_FIRST_OPTION"
+    )
+    default boolean enableGameObjectFirstOption() { return false; }
 
-	/*
+    @ConfigItem(
+            keyName = "gameObjectOption",
+            name = "Option",
+            description = "",
+            position = 4,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "OBJECT_FIRST_OPTION"
+    )
+    default String gameObjectOption() { return "Chop down"; }
 
-	@ConfigItem(
-			keyName = "enableDropping",
-			name = "Drop-All",
-			description = "Add a menu option \"Drop-All\" to the inventory tab. The menu option will only show if a bank is nearby.",
-			position = 10,
-			titleSection = "miscMenuSwapsTitle"
-	)
-	default boolean enableBanking() { return false; }
+    @ConfigItem(
+            keyName = "gameObjectFirstOptionTarget",
+            name = "Clicked Item ID : GameObject ID",
+            description = "Replace \"Clicked item\" with the id of the item you want to click on. Replace \"GameObject ID\" with the game object you want to interact with.",
+            position = 5,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "OBJECT_FIRST_OPTION"
+    )
+    default String gameObjectFirstOptionIds() { return "1353:3511"; }
 
-	*/
+//  ██╗   ██╗███████╗███████╗
+//  ██║   ██║██╔════╝██╔════╝
+//  ██║   ██║███████╗█████╗
+//  ██║   ██║╚════██║██╔══╝
+//  ╚██████╔╝███████║███████╗
+//   ╚═════╝ ╚══════╝╚══════╝
+//
+//  ██╗████████╗███████╗███╗   ███╗
+//  ██║╚══██╔══╝██╔════╝████╗ ████║
+//  ██║   ██║   █████╗  ██╔████╔██║
+//  ██║   ██║   ██╔══╝  ██║╚██╔╝██║
+//  ██║   ██║   ███████╗██║ ╚═╝ ██║
+//  ╚═╝   ╚═╝   ╚══════╝╚═╝     ╚═╝
+//
+//   ██████╗ ███╗   ██╗
+//  ██╔═══██╗████╗  ██║
+//  ██║   ██║██╔██╗ ██║
+//  ██║   ██║██║╚██╗██║
+//  ╚██████╔╝██║ ╚████║
+//   ╚═════╝ ╚═╝  ╚═══╝
+//
+//   ██████╗ ██████╗      ██╗███████╗ ██████╗████████╗
+//  ██╔═══██╗██╔══██╗     ██║██╔════╝██╔════╝╚══██╔══╝
+//  ██║   ██║██████╔╝     ██║█████╗  ██║        ██║
+//  ██║   ██║██╔══██╗██   ██║██╔══╝  ██║        ██║
+//  ╚██████╔╝██████╔╝╚█████╔╝███████╗╚██████╗   ██║
+//   ╚═════╝ ╚═════╝  ╚════╝ ╚══════╝ ╚═════╝   ╚═╝
+//
 
-	@ConfigTitleSection(
-			keyName = "debugTitle",
-			name = "Developer",
-			description = "",
-			position = 100
-	)
-	default Title debugTitle() { return new Title(); }
+    @ConfigItem(
+            keyName = "enableItemOnObject",
+            name = "Enable",
+            description = "",
+            position = 3,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "OBJECT_USE_ITEM_ON"
+    )
+    default boolean enableItemOnObject() { return false; }
 
-	@ConfigItem(
-			keyName = "enableDebugMessages",
-			name = "Debug Messages",
-			description = "Enable debug messages (dev only).",
-			position = 101
-	)
-	default boolean enableDebugging() { return false; }
+    @ConfigItem(
+            keyName = "useItemOnObjectIds",
+            name = "Clicked Item ID : NPC ID",
+            description = "Replace \"Clicked item\" with the id of the item you want to click on. Replace \"Object ID\" with the object you want to use the item on.",
+            position = 4,
+            title = "configOptionsTitle",
+            hidden = true,
+            unhide = "configEnum",
+            unhideValue = "OBJECT_USE_ITEM_ON"
+    )
+    default String useItemOnObjectIds() { return "1519:590"; }
 
-	@ConfigItem(
-			keyName = "enableWriteToClipboard",
-			name = "Copy to clipboard",
-			description = "Copies the menu entry to your clipboard to provide suggestions.",
-			hidden = true,
-			unhide = "enableDebugMessages",
-			unhideValue = "true",
-			position = 102
-	)
-	default boolean enableWriteToClipboard() { return false; }
+//   █████╗ ██╗   ██╗████████╗ ██████╗ ███╗   ███╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗
+//  ██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗████╗ ████║██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║
+//  ███████║██║   ██║   ██║   ██║   ██║██╔████╔██║███████║   ██║   ██║██║   ██║██╔██╗ ██║
+//  ██╔══██║██║   ██║   ██║   ██║   ██║██║╚██╔╝██║██╔══██║   ██║   ██║██║   ██║██║╚██╗██║
+//  ██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║ ╚═╝ ██║██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║
+//  ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+//
 
+    @ConfigTitle(
+            keyName = "automationTitle",
+            name = "Automation Options",
+            description = "",
+            position = 2
+    )
+    String automationTitle = "automationTitle";
+
+    @ConfigItem(
+            keyName = "droppingKeybind",
+            name = "Keybind",
+            description = "If enabled, when the drop-matching hotkey is pressed, all items that match in the box below will be dropped.",
+            position = 3,
+            title = "automationTitle"
+    )
+    default Keybind dropKeybind() { return Keybind.NOT_SET; }
+
+    @ConfigItem(
+            keyName = "dropMatching",
+            name = "Drop matching",
+            description = "If enabled, when the drop-matching hotkey is pressed, all items that match in the box below will be dropped.",
+            position = 4,
+            title = "automationTitle"
+    )
+    default boolean dropMatching() { return false; }
+
+    @ConfigItem(
+            keyName = "matchingList",
+            name = "Matching list",
+            description = "If enabled, when the drop-matching hotkey is pressed, all items that match in the box below will be dropped.",
+            position = 5,
+            title = "automationTitle"
+    )
+    default String matchingList() { return "Bones"; }
+
+    @ConfigItem(
+            keyName = "dropExcept",
+            name = "Drop except",
+            description = "If enabled, when the drop-matching hotkey is pressed, all items that match in the box below will be dropped.",
+            position = 6,
+            title = "automationTitle"
+    )
+    default boolean dropExcept() { return false; }
+
+    @ConfigItem(
+            keyName = "exceptList",
+            name = "Except list",
+            description = "If enabled, when the drop-matching hotkey is pressed, all items that don't match in the box below will be dropped.",
+            position = 7,
+            title = "automationTitle"
+    )
+    default String exceptList() { return "Bones"; }
+
+    @ConfigItem(
+            keyName = "listOrder",
+            name = "Order",
+            description = "The iteration order.",
+            position = 8,
+            title = "automationTitle"
+    )
+    default String listOrder() { return "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27"; }
+
+    @ConfigItem(
+            keyName = "minTime",
+            name = "Min (millis)",
+            description = "The minimum time between dropping.",
+            position = 9,
+            title = "automationTitle"
+    )
+    default String minTime() { return "250"; }
+
+    @ConfigItem(
+            keyName = "maxTime",
+            name = "Max (millis)",
+            description = "The maximum time between dropping.",
+            position = 10,
+            title = "automationTitle"
+    )
+    default String maxTime() { return "1000"; }
 }

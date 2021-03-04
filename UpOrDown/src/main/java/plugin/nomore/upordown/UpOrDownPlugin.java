@@ -33,11 +33,11 @@ import net.runelite.api.events.GameObjectChanged;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
+
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -48,8 +48,7 @@ import java.util.*;
 @PluginDescriptor(
 		name = "Up or Down",
 		description = "Highlights everything that goes up or down.",
-		tags = {"ladder", "highlight", "tag3"},
-		type = PluginType.UTILITY
+		tags = {"ladder", "highlight", "tag3"}
 )
 @Slf4j
 public class UpOrDownPlugin extends Plugin
@@ -103,11 +102,8 @@ public class UpOrDownPlugin extends Plugin
 	@Subscribe
 	private void on(GameStateChanged e)
 	{
-		switch (client.getGameState())
-		{
-			case LOADING:
-				elevationObjects.clear();
-				break;
+		if (client.getGameState() == GameState.LOADING) {
+			elevationObjects.clear();
 		}
 	}
 
@@ -138,7 +134,7 @@ public class UpOrDownPlugin extends Plugin
 
 	private ElevationObject createElevationObject(GameObject obj, Tile tile)
 	{
-		ObjectDefinition def = client.getObjectDefinition(obj.getId());
+		ObjectComposition def = client.getObjectDefinition(obj.getId());
 		if (def == null)
 		{
 			return null;

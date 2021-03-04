@@ -26,45 +26,31 @@
 package plugin.nomore.qolclicks;
 
 import com.google.inject.Provides;
-
-import javax.inject.Inject;
-
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
-
-import net.runelite.api.events.*;
+import net.runelite.api.events.GameTick;
+import net.runelite.api.events.MenuEntryAdded;
+import net.runelite.api.events.MenuOpened;
+import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
+import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.HotkeyListener;
 import org.pf4j.Extension;
-import plugin.nomore.qolclicks.misc.Banking;
-import plugin.nomore.qolclicks.skills.cooking.Cooking;
-import plugin.nomore.qolclicks.skills.firemaking.Firemaking;
-import plugin.nomore.qolclicks.skills.fishing.Fishing;
-import plugin.nomore.qolclicks.skills.prayer.Prayer;
+import plugin.nomore.qolclicks.menu.Menu;
+import plugin.nomore.qolclicks.utils.Automation;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import javax.inject.Inject;
 
 @Extension
 @PluginDescriptor(
 		name = "QOL Clicks",
 		description = "QOL fixes that should be implemented.",
-		tags = {"click", "nomore", "qol"},
-		type = PluginType.UTILITY
+		tags = {"nomore", "qol", "click"}
 )
 @Slf4j
 public class QOLClicksPlugin extends Plugin
@@ -77,24 +63,19 @@ public class QOLClicksPlugin extends Plugin
 	private QOLClicksConfig config;
 
 	@Inject
-	private Firemaking firemaking;
+	private OverlayManager overlayManager;
 
 	@Inject
-	private Cooking cooking;
+	private QOLClicksOverlay overlay;
 
 	@Inject
-	private Fishing fishing;
+	private KeyManager keyManager;
 
 	@Inject
-	private Prayer prayer;
+	private Menu menu;
 
 	@Inject
-	private Banking banking;
-
-	@Inject
-	public ExecutorService executor;
-
-	public boolean iterating = false;
+	private Automation automation;
 
 	@Provides
 	QOLClicksConfig provideConfig(ConfigManager configManager)
@@ -102,172 +83,64 @@ public class QOLClicksPlugin extends Plugin
 		return configManager.getConfig(QOLClicksConfig.class);
 	}
 
+	private final HotkeyListener toggle = new HotkeyListener(() -> config.dropKeybind())
+	{
+		@Override
+		public void hotkeyPressed()
+		{
+			automation.setReadyToDrop(true);
+		}
+	};
+
 	@Override
 	protected void startUp()
 	{
-		executor = Executors.newSingleThreadExecutor();
-		if (client.getLocalPlayer() == null)
-		{
-			return;
-		}
-		client.getNpcs().forEach(npc ->
-		{
-			if (npc != null)
-			{
-				npcList.add(npc);
-			}
-		});
+		keyManager.registerKeyListener(toggle);
+		overlayManager.add(overlay);
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		executor.shutdown();
-		iterating = false;
+		keyManager.unregisterKeyListener(toggle);
+		overlayManager.remove(overlay);
 	}
 
 	@Subscribe
-	private void on(MenuOptionClicked event)
+	private void on(GameTick e)
 	{
-		MenuEntry clone = event.clone();
-
-		String origOption = event.getOption();
-		String origTarget = event.getTarget();
-		int origId = event.getIdentifier();
-		MenuOpcode origMenuOpcode = event.getMenuOpcode();
-		int origP0 = event.getParam0();
-		int origP1 = event.getParam1();
-		boolean origIsFLC = event.isForceLeftClick();
-
-		if (config.enableFiremaking())
-		{
-			if (!firemaking.menuOptionClicked(event))
-			{
-				event.setMenuEntry(clone);
-			}
-		}
-
-		if (config.enableCooking())
-		{
-			if (!cooking.menuOptionClicked(event))
-			{
-				event.setMenuEntry(clone);
-			}
-		}
-
-		if (config.enableFishingRod()
-				|| config.enableLobsterPot())
-		{
-			if (!fishing.menuOptionClicked(event))
-			{
-				event.setMenuEntry(clone);
-			}
-		}
-
-		if (config.enableBanking())
-		{
-			if (!banking.menuOptionClicked(event))
-			{
-				event.setMenuEntry(clone);
-			}
-		}
-
-		if (config.enableUnnoteBones())
-		{
-			if (!prayer.menuOptionClicked(event))
-			{
-				event.setMenuEntry(clone);
-			}
-		}
-
-		/*
-		if (config.enable()
-				&& !.menuOptionClicked(event))
-		{
-			event.consume();
-		}
-
-		 */
-
-		if (config.enableDebugging() && event.getOpcode() != MenuOpcode.WALK.getId())
-		{
-			System.out.println(
-					"\n" + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:S").format(new Date())
-							+ "\nOrig: Option: " + origOption + "   ||   Mod: Option: " + event.getOption()
-							+ "\nOrig: Target: " + origTarget + "   ||   Mod: Target: " + event.getTarget()
-							+ "\nOrig: Identifier: " + origId + "   ||   Mod: Identifier: " + event.getIdentifier()
-							+ "\nOrig: Opcode: " + origMenuOpcode + "   ||   Mod: Opcode: "	+ event.getMenuOpcode()
-							+ "\nOrig: Param0: " + origP0 + "   ||   Mod: Param0: " + event.getParam0()
-							+ "\nOrig: Param1: " + origP1 + "   ||   Mod: Param1: " + event.getParam1()
-							+ "\nOrig: forceLeftClick: " + origIsFLC + "   ||   Mod: forceLeftClick: " 	+ event.isForceLeftClick()
-			);
-
-			if (config.enableWriteToClipboard())
-			{
-				writeTextToClipboard(
-						"```\n"
-						+ "\n" + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:S").format(new Date())
-						+ "\nOrig: Option: " + origOption + "   ||   Mod: Option: " + event.getOption()
-						+ "\nOrig: Target: " + origTarget + "   ||   Mod: Target: " + event.getTarget()
-						+ "\nOrig: Identifier: " + origId + "   ||   Mod: Identifier: " + event.getIdentifier()
-						+ "\nOrig: Opcode: " + origMenuOpcode + "   ||   Mod: Opcode: "	+ event.getMenuOpcode()
-						+ "\nOrig: Param0: " + origP0 + "   ||   Mod: Param0: " + event.getParam0()
-						+ "\nOrig: Param1: " + origP1 + "   ||   Mod: Param1: " + event.getParam1()
-						+ "\nOrig: forceLeftClick: " + origIsFLC + "   ||   Mod: forceLeftClick: " 	+ event.isForceLeftClick()
-						+ "\n```");
-			}
-		}
-	}
-
-	@Subscribe
-	private void on(MenuEntryAdded event)
-	{
-		if (config.enableFiremaking())
-		{
-			firemaking.menuEntryAdded(event);
-		}
-
-		if (config.enableCooking())
-		{
-			cooking.menuEntryAdded(event);
-		}
-
-		if (config.enableFishingRod()
-				|| config.enableLobsterPot())
-		{
-			fishing.menuEntryAdded(event);
-		}
-
-		if (config.enableBanking())
-		{
-			banking.menuEntryAdded(event);
-		}
-
-		if (config.enableUnnoteBones())
-		{
-			prayer.menuEntryAdded(event);
-		}
-	}
-
-	public static List<NPC> npcList = new ArrayList<>();
-	public List<NPC> getNpcList() { return npcList; }
-
-	@Subscribe
-	private void on(NpcSpawned e)
-	{
-		NPC npc = e.getNpc();
-		if (npc == null)
+		if (automation.isBusy())
 		{
 			return;
 		}
-		npcList.add(npc);
+
+		if (automation.isReadyToDrop())
+		{
+			automation.dropItems();
+		}
 	}
 
 	@Subscribe
-	private void on(NpcDespawned e)
+	private void on(MenuOpened e) { menu.onOpen(e); }
+
+	@Subscribe
+	private void on(MenuOptionClicked e)
 	{
-		npcList.remove(e.getNpc());
+		if (automation.getTargetMenu() == null)
+		{
+			menu.onClicked(e);
+		}
+		else
+		{
+			e.setMenuEntry(automation.getTargetMenu());
+			automation.setTargetMenu(null);
+		}
+
+		debugMessage(e);
 	}
+
+	@Subscribe
+	private void on(MenuEntryAdded e) { menu.onAdded(e); }
 
 	public void setSelected(WidgetInfo widgetInfo, int itemIndex, int itemId)
 	{
@@ -282,18 +155,27 @@ public class QOLClicksPlugin extends Plugin
 				e.getOption(),
 				e.getTarget(),
 				e.getOpcode(),
-				e.getIdentifier(),
+				e.getId(),
 				e.getParam0(),
 				e.getParam1(),
 				forceLeftClick
 		);
 	}
 
-	public static void writeTextToClipboard(String s)
+	private void debugMessage(MenuOptionClicked e)
 	{
-		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		Transferable transferable = new StringSelection(s);
-		clipboard.setContents(transferable, null);
+		if (e.getMenuAction() == MenuAction.WALK)
+		{
+			return;
+		}
+		System.out.println(
+				"Point: " + automation.getClickedPoint() + "\n" +
+				"Option: " + e.getMenuOption() + "\n" +
+				"Target: " + e.getMenuTarget() + "\n" +
+				"ID: " + e.getId() + "\n" +
+				"MenuAction: " + e.getMenuAction() + "\n" +
+				"ActionParam: " + e.getActionParam() + "\n" +
+				"WidgetID: " + e.getWidgetId() + "\n"
+		);
 	}
-
 }

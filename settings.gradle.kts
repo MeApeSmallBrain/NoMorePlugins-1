@@ -25,20 +25,18 @@
 
 rootProject.name = "NoMorePlugins"
 
-include(":NMPUtils")
-include(":AIOMarkers")
+include(":GroundItemsExtended")
 include(":InterfaceMarking")
-include(":InventoryItemIndicators")
+include(":InventoryTagsExtended")
 include(":MouseLogger")
-include(":MyCharacterIndicators")
 include(":NoMoreAgility")
 include(":NoMoreWintertodt")
-include(":StatRandomiser")
-include(":NMGroundItems")
-include(":NMGroundMarkers")
-include(":NMInventoryTags")
-include(":NMObjectIndicators")
+include(":NPCHighlightingExtended")
+include(":ObjectMarkersExtended")
+include(":PlayerStatesIndicators")
 include(":QOLClicks")
+include(":QOLClicksBeta")
+include(":StatRandomiser")
 include(":UpOrDown")
 
 for (project in rootProject.children) {

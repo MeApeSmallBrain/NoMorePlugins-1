@@ -1,9 +1,15 @@
 package plugin.nomore.qolclicks.menu;
 
-import net.runelite.api.*;
-import net.runelite.api.widgets.WidgetInfo;
-import net.runelite.api.widgets.WidgetItem;
-import plugin.nomore.qolclicks.QOLClicksPlugin;
+import net.runelite.api.MenuAction;
+import net.runelite.api.events.MenuEntryAdded;
+import net.runelite.api.events.MenuOpened;
+import net.runelite.api.events.MenuOptionClicked;
+import plugin.nomore.qolclicks.QOLClicksConfig;
+import plugin.nomore.qolclicks.highlighting.Arrow;
+import plugin.nomore.qolclicks.menu.inventory.GameObj;
+import plugin.nomore.qolclicks.menu.inventory.Inventory;
+import plugin.nomore.qolclicks.menu.inventory.Npc;
+import plugin.nomore.qolclicks.utils.Utils;
 
 import javax.inject.Inject;
 
@@ -11,50 +17,67 @@ public class Menu
 {
 
     @Inject
-    QOLClicksPlugin plugin;
+    private QOLClicksConfig config;
 
-    public void useItemOnItem(String option, String target, WidgetItem itemClicked, WidgetItem itemToBeUsedOn, MenuEntry event)
+    @Inject
+    private Arrow arrow;
+
+    @Inject
+    private Inventory inventory;
+
+    @Inject
+    private Npc npc;
+
+    @Inject
+    private GameObj gameObj;
+
+    @Inject
+    private Utils utils;
+
+    public void onOpen(MenuOpened e)
     {
-        plugin.setSelected(WidgetInfo.INVENTORY, itemToBeUsedOn.getIndex(), itemToBeUsedOn.getId());
-        event.setOption(option);
-        event.setTarget(target);
-        event.setIdentifier(itemClicked.getId());
-        event.setOpcode(MenuOpcode.ITEM_USE_ON_WIDGET_ITEM.getId());
-        event.setForceLeftClick(false);
+
     }
 
-    public void interactWithNpc(String option, String target, NPC npc, MenuEntry event)
+    public void onAdded(MenuEntryAdded e)
     {
-        event.setOption(option);
-        event.setTarget(target);
-        event.setIdentifier(npc.getIndex());
-        event.setOpcode(MenuOpcode.NPC_FIRST_OPTION.getId());
-        event.setParam0(0);
-        event.setParam1(0);
-        event.setForceLeftClick(false);
+
     }
 
-    public void interactWithGameObject(String option, String target, GameObject object, MenuEntry event)
+    public void onClicked(MenuOptionClicked e)
     {
-        event.setOption(option);
-        event.setTarget(target);
-        event.setIdentifier(object.getId());
-        event.setOpcode(MenuOpcode.GAME_OBJECT_SECOND_OPTION.getId());
-        event.setParam0(object.getSceneMinLocation().getX());
-        event.setParam1(object.getSceneMinLocation().getY());
-        event.setForceLeftClick(false);
-    }
+        arrow.draw(e);
 
-    public void useItemOnGameObject(String option, String target, GameObject object, WidgetItem widgetItem, MenuEntry event)
-    {
-        plugin.setSelected(WidgetInfo.INVENTORY, widgetItem.getIndex(), widgetItem.getId());
-        event.setOption(option);
-        event.setTarget(target);
-        event.setIdentifier(object.getId());
-        event.setOpcode(MenuOpcode.ITEM_USE_ON_GAME_OBJECT.getId());
-        event.setParam0(object.getSceneMinLocation().getX());
-        event.setParam1(object.getSceneMinLocation().getY());
-        event.setForceLeftClick(false);
+        if (e.getMenuAction() == MenuAction.ITEM_USE
+                && config.enableItemOnItem())
+        {
+            inventory.useItemOnItem(e);
+        }
+
+        if (e.getMenuAction() == MenuAction.ITEM_USE
+                && config.enableNPCFirstOption())
+        {
+            npc.interactWithNPC(e);
+        }
+
+        if (e.getMenuAction() == MenuAction.ITEM_USE
+                && config.enableItemOnNpc())
+        {
+            npc.useItemOnNPC(e);
+        }
+
+        if (e.getMenuAction() == MenuAction.ITEM_USE
+                && config.enableGameObjectFirstOption())
+        {
+            gameObj.interactWithGameObject(e);
+        }
+
+        if (e.getMenuAction() == MenuAction.ITEM_USE
+                && config.enableItemOnObject())
+        {
+            gameObj.useItemOnGameObject(e);
+        }
+
     }
 
 }

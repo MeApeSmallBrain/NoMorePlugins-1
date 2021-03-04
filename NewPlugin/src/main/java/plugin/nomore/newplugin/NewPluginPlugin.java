@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package plugin.nomore.upordown;
+package plugin.nomore.qolclicksbeta;
 
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import org.pf4j.Extension;
 import plugin.nomore.nmputils.NMPUtils;
 import plugin.nomore.nmputils.api.DebugAPI;
@@ -45,24 +44,14 @@ import javax.inject.Inject;
 @PluginDescriptor(
 		name = "New Plugin",
 		description = "New Plugin Description",
-		tags = {"tag1", "tag2", "tag3"},
-		type = PluginType.UTILITY
+		tags = {"tag1", "tag2", "tag3"}
 )
 @Slf4j
-@PluginDependency(NMPUtils.class)
 public class NewPluginPlugin extends Plugin
 {
 
 	@Inject
 	private Client client;
-
-	@Inject
-	private NMAUtils utils;
-
-	@Inject
-	private DebugAPI debug;
-
-	private int tickDelay = 2;
 
 	@Provides
 	NewAutomationPluginConfig provideConfig(ConfigManager configManager)
@@ -73,25 +62,13 @@ public class NewPluginPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		debug.log("Plugin started.");
+		log.info("Plugin started.");
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		debug.log("Plugin finished.");
-	}
-
-	@Subscribe
-	private void on(GameTick gameTick)
-	{
-
-		if (!utils.runScript(tickDelay))
-		{
-			tickDelay--;
-			return;
-		}
-
+		log.info("Plugin finished.");
 	}
 
 }
